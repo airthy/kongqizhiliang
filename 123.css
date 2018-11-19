@@ -1,0 +1,21 @@
+
+.square{
+width:100%;
+
+}
+
+.kongqi{
+
+width:80%;
+
+}
+
+.kongqi li{
+float:left;
+list-style:none;
+width:200px;
+background-color:#f3e8e8;
+text-align:center;
+letter-spacing:0.5em;
+border: solid 1px white;
+}
