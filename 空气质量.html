@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='GBK'>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" type="text/css"media="screen and (max-device-width:400px)"href="12
+3.css" />
+<title></title>
+
+<style>
+
+*{
+margin:0px;
+padding:0px;
+}
+
+header{
+width:100%;
+height:100px;
+}
+
+header h1{
+font-size:1.5em;
+color:white;
+font-weight:bold;
+padding-top:10px;
+padding-left:300px;
+
+}
+header span{
+color:white;
+padding-top:20px;
+padding-left:300px;
+}
+
+.head{
+
+background:grey;
+
+}
+
+.head1{
+background-color:#a29c9c;
+height:50px;
+}
+
+.head1 span{
+display:block;
+padding-left:300px;
+padding-top:5px;  
+
+}
+
+.head2{
+display:block;
+padding-top:15px;
+padding-left:300px;
+
+}
+
+.wrap{
+position:relative;
+height:100%;
+width:100%;
+font-size:1em;
+}
+.wrap2{
+position:relative;
+height:100%;
+width:100%;
+font-size:1em;
+}
+.kongqi{
+padding-left:20%;
+padding-top:0.5%;
+letter-spacing:-8px;
+width:80%;  //子元素宽度使用百分比是相对于父元素 父元素已经是100% 因为子元素还有padding空白区域 所以不能设置100% 否则浏览器右边会出现空白
+height:100%;
+position:absolute;
+
+}
+.kongqi li{
+float:left;
+display:block;
+margin-right:5px;
+width:15%;
+height:2.5em;
+background-color:#f3e8e8;
+text-align:center;
+letter-spacing:5px;
+border: solid 1px white;
+
+}
+.clear{
+height:3.0em;
+}
+.kongqi li:link{
+background:grey;
+}
+.kongqi li:hover{
+background:white;
+}
+
+.chartGood{
+background:blue;
+}
+.chartBad{
+background:grey;
+}
+.chartYiban{
+background:red;
+}
+.chartYiban{
+background:yellow;
+}
+
+#chart1 span{
+display:inline-block;
+width:80%;
+height:1.5em;
+}
+#chart1{
+padding-left:30%;
+padding-top:2%; //设置图表和上个块级元素的内边距
+font-size:1.5em;
+list-style:none;
+position:absolute;
+width:70%;
+}
+#chart1 li{
+width:50%;
+}
+path{
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 2;
+}
+
+.domain,.tick line{
+stroke:grey;
+stroke-width:1;
+}
+
+.tick text{
+font-size:1em;
+}
+
+.price{
+font-size:1em;
+
+}
+
+.clear2{
+height:30em;
+}
+
+</style>
+
+<script>
+
+window.onload=init;
+
+function init(){
+
+var echart=[[20,142,200,160,10,14,45,20,400,400],[20,150,200,160,20,14,12,20,120,400],[70,20,200,150,120,14,12,20,120,400]];
+
+
+function square(src){ //读取的数据
+var outData={
+'chartGood':0,
+'chartBad':0,
+'chartYiban':0,
+'chartYoulan':0
+}
+
+for(var i=0;i<src.length;i++){ //每个月数据的分类 统计数据
+if(src[i]>60){
+outData.chartGood++;
+
+}
+if(src[i]>60&&src[i]<120){
+outData.chartBad++;
+
+}
+if(src[i]>120&&src[i]<150){
+outData.chartYiban++;
+
+}
+if(src[i]>150){
+outData.chartYoulan++;
+
+}
+}
+console.log(outData.chartGood)
+console.log(outData.chartBad)
+console.log(outData.chartYiban)
+console.log(outData.chartYoulan)
+return outData;
+
+}
+
+function renderStyle(month,data,data1){
+  var dataL=data1.length;
+  console.log(dataL);
+  var render=' ';
+  render+='<li style="width:80%">'+month+':';
+  render+='<span class="chartGood" style="width:'+data.chartGood/dataL*100+'%"></span>';
+  render+='<span class="chartBad" style="width:'+data.chartBad/dataL*100+'%"></span>';
+  render+='<span class="chartYiban" style="width:'+data.chartYiban/dataL*100+'%"></span>';
+  render+='<span class="chartYoulian" style="width:'+data.chartYoulian/dataL*100+'%"></span>'+'</li>';
+
+  var chart=document.getElementById('chart1');
+  chart.innerHTML=render;
+  return chart.innerHTML;  
+}
+
+
+function senderAll(month){ 
+  var html='';
+  for(var j=0;j<month.length;j++){ //循环二维数组 中第一维数组
+  var month1=(j+1)+'月';   
+   html=html+renderStyle(month1,square(month[j]),month[j])+'</br>';
+ }  
+
+  var chart1=document.getElementById('chart1');
+  chart1.innerHTML=html;
+
+}
+senderAll(echart);
+
+var kongqi=document.getElementById('kongqi1').getElementsByTagName('li'); //获得ID值为kongqi1下的所有标签值
+
+kongqi[0].onclick=function(){  //当单击第一个LI标签时 出现块状图表
+   senderAll(echart);
+   
+}
+kongqi[1].onclick=function(){
+   senderAll1();
+   canvas();
+}
+
+kongqi[2].onclick=function(){
+   senderAll2();
+   sender3();
+   
+   
+}
+
+kongqi[3].onclick=function(){
+    senderAll3();
+    sender4();
+}
+
+function senderAll1(){  //创建<canvas></canvas>标签
+  var rend='';
+  rend+='<div style="marginTop:'+30+'px">';
+  rend+='<canvas id="canvas1" style="margin-left:10px" ></canvas>'; /*canvas的宽高不能用百分比显示 如果用百分比 会直接显示百分比的数值*/
+  rend+='</div>';
+  var chart=document.getElementById('chart1');
+  chart.innerHTML=rend;
+
+
+  return chart.innerHTML;
+}
+
+function canvas(){
+ var canvas1=document.getElementById("canvas1");
+    var context=canvas1.getContext("2d"); //得到canvas图形容器 内置的绘图对象 目前只和支持2d
+
+    function pageLoad(w1,h1)
+    {
+       canvas1.width=w1; //将canvas的宽设置为根据浏览器变化的宽
+       canvas1.height=h1; //将canvas的高设置为根据浏览器变化的高
+
+        var x0=0.1*canvas1.width;   //x轴坐标初始值开始位置
+        var y0=0.9*canvas1.height;  //y轴坐标初始值开始位置
+      
+        var widthAx=0.8*canvas1.width;  //x轴的长宽度
+        var heightAx=0.8*canvas1.height;  //y轴的长宽度
+        console.log(canvas1.width)
+        console.log(canvas1.height)        
+
+        //绘制路径 每次绘制好路径 要使用beginPath 以准备下一次绘制
+      context.moveTo(0.1*canvas1.width,0.1*canvas1.height);
+      context.lineTo(0.1*canvas1.width,0.9*canvas1.height);
+      context.lineTo(0.9*canvas1.width,0.9*canvas1.height);
+      context.moveTo(0.09*canvas1.width,0.115*canvas1.height);
+      context.lineTo(0.1*canvas1.width,0.1*canvas1.height);
+      context.lineTo(0.11*canvas1.width,0.115*canvas1.height);
+      context.moveTo(0.885*canvas1.width,0.89*canvas1.height);
+      context.lineTo(0.9*canvas1.width,0.9*canvas1.height);
+      context.lineTo(0.885*canvas1.width,0.91*canvas1.height);
+        context.strokeStyle='black';
+        context.lineWidth=2;
+        context.stroke();
+        context.beginPath();
+        var textX=[0,1,2,3,4];
+        for(var i=0;i<4&&x0<canvas1.width;i++){
+
+            context.font="20pt Calibri";
+            context.fillText(textX[i],x0,y0+20);
+            x0+=0.2*canvas1.width;
+        }//X轴的数字
+        var textY=[10,20,30,40];
+        x0=0.1*canvas1.width;
+        for(var i=0;i<4&&y0>0;i++)
+        {
+            y0-=0.2*canvas1.height;
+            context.font="20pt Calibri";
+            context.fillText(textY[i],x0-30,y0);
+
+        }
+        // drawData();
+        var tempData=[32,22,30];
+        y0=0.9*canvas1.height;
+        var nowX0=x0+0.2*canvas1.width;
+        context.arc(nowX0,y0-canvas1.height*0.8*tempData[0]/40,6,0,2*Math.PI);
+        context.fillStyle="red";
+        context.fill();
+        context.beginPath();
+        context.moveTo(nowX0,y0-canvas1.height*0.8*tempData[0]/40);
+        for(var i=1;i<3;i++)
+        {
+            nowX0+=0.2*canvas1.width;
+            context.lineTo(nowX0,y0-tempData[i]/40*canvas1.height*0.8);
+            context.strokeStyle='red';
+            context.stroke();
+            context.beginPath();
+            context.fillStyle="red";
+            context.arc(nowX0,y0-tempData[i]/40*canvas1.height*0.8,6,0,2*Math.PI);
+            //context.stroke();
+            context.fill();
+        }
+       
+
+    }
+
+
+pageLoad(400,400); /*在未改变浏览器初始呈现图表宽高设定*/
+           window.addEventListener('resize',resizeCanvas1,false); /*实现canvas绘制图表的自适应 首先监听浏览器的onresize事件 根据浏览器的宽高来设置块级元素的大小 */
+           function resizeCanvas1(){   //进行resize节流
+            clearTimeout(resizeCanvas.id);
+            resizeCanvas.id=setTimeout(function(){resizeCanvas();}
+           ,100);
+
+}
+           function resizeCanvas(){
+
+            var w=canvas.width=window.innerWidth/2;
+            var h=canvas.height=window.innerHeight/2;
+            console.log(w);
+            
+           pageLoad(w,h); /*进行canvas图表的重绘 将改变的宽高传入到函数中*/
+}
+
+}
+
+
+
+
+function senderAll2(){
+
+ var rend=' ';
+ rend+='<div style="margin-top:'+30+'px;width:60%;" id="container">'; /*注意分号 宽度使用百分比 */
+ rend+='</div>'
+ 
+ var chart3=document.getElementById('chart1');
+ chart3.innerHTML=rend;
+}
+
+
+function sender3(){
+var width=600;
+var height=400;
+var margin={top:30,left:40,right:100,bottom:60}
+g_width=width-margin.left-margin.right;
+g_height=height-margin.top-margin.right;
+
+
+
+var svg=d3.select('#container')
+.append('svg').attr('preserveAspectRatio',"xMidYMid meet").attr("viewBox","0 0 500 500")/*viewBox视区盒子 preserveAspetRation属性指出了如何缩放及如果对齐viewBox到viewport上 preserveAspectRation 配合viewBox 的使用*/
+
+var data=[1,3,5,2,12]
+
+var line1=d3.svg.line()  // line()曲线构造器 返回的是一个函数
+.x(function(d,i){return scale_x(i);})
+.y(function(d){return scale_y(d);})
+.interpolate('cardinal')
+
+var g=d3.select('svg')
+.append('g').attr('transform','translate('+margin.left+','+margin.top+')')
+
+var scale_x=d3.scale.linear() //创建线性比例尺
+.domain([0,data.length-1])  //定义域
+.range([0,g_width])
+
+var scale_y=d3.scale.linear()
+.domain([0,d3.max(data)])           //值域
+.range([g_height,0])
+
+d3.select('g').append('path').attr('d',line1(data))
+
+var x_axis=d3.svg.axis().scale(scale_x);
+
+var y_axis=d3.svg.axis().scale(scale_y).orient('left');
+
+g.append('g')
+.call(x_axis).attr('transform','translate(0,'+g_height+')')
+
+
+g.append('g')
+.call(y_axis).append('text').text('质量浓度(ug.m3)').attr('transform','rotate(-90)').attr('text-anchor','end').attr('dy','1em').attr('class','price')
+
+}
+
+
+function senderAll3(){
+
+ var rend=' ';
+ rend+='<div style="marginTop:'+30+'px" id="container">';
+ rend+='</div>'
+ 
+ var chart3=document.getElementById('chart1');
+ chart3.innerHTML=rend;
+}
+
+function sender4(){
+d3.csv('data.csv',type,function(data){console.log(data);
+
+var width=1000;
+var height=500;
+var margin={left:30,top:30,right:30,bottom:30};
+var svgWidth=width+margin.left+margin.right;
+var svgHeight=height+margin.top+margin.bottom;
+
+var scale_x=d3.scale.ordinal()
+.domain(data.map(function(d){return d.year;}))
+.rangeBands([0,width],0.1)
+
+var scale=d3.scale.linear()
+.domain([0,d3.max(data,function(d){return d.population;})])
+.range([height,0])
+
+
+
+var svg=d3.select("#container")
+        .append("svg")
+        .attr('width',svgWidth)
+        .attr('height',svgHeight);
+
+
+
+
+var chart=svg.append('g')
+.attr('transform','translate('+margin.left+','+margin.top+')');
+
+var x_axis=d3.svg.axis().scale(scale_x);
+var y_axis=d3.svg.axis().scale(scale).orient('left');
+
+chart.append('g').
+call(x_axis).attr('transform','translate(0'+','+height+')')
+
+chart.append('g').
+call(y_axis)
+
+var bar=chart.selectAll('.bar').data(data).enter().append('g').attr('class','bar').attr('transform',function(d,i){return 'translate('+scale_x(d.year)+',0)'});
+
+bar.append('rect').attr(
+{
+'y':function(d){return scale(d.population);},   //原先为scale(d) scale用法
+'width':scale_x.rangeBand(),
+'height':function(d){return height-scale(d.population)}
+
+}
+).style('fill','steelblue')
+
+bar.append('text').text(function(d){return d.year;})
+.attr({
+ 'y':function(d){return scale(d.population);},
+ 'x':scale_x.rangeBand()/2,
+ 'dx':-5
+})
+});
+
+function type(d){
+ d.population=+d.population;
+ return d;
+
+}
+
+}
+
+}
+
+</script>
+
+</head>
+
+<body>
+<div class='square'>
+<header class='head'> <h1>北京主要空气质量</h1> 
+
+<span>数据更新时间 2018-1-22</span> 
+</header>
+
+<div class='head1'><span>引言:你关不关注，它就在那里</span></div>
+
+<div > 
+
+<span class='head2'>概况：今天哪里又爆表了</span>
+<div class='wrap' id='wrap2'> 
+<ul class='kongqi' id='kongqi1'> 
+
+<li class=''>AQI</br> 空气质量 </li>
+<li>PM2.5</br>细颗粒物 </li>
+<li>PM10</br>可吸入颗粒物 </li>
+<li>CO</br>一氧化碳 </li>
+
+</ul>
+<div class='clear'>  <!--使用div是为了避免absolute造成的脱离文档流影响 -->
+</div>
+</div>
+
+<div class="wrap2">
+<div id='chart1'>
+
+</div>
+
+<div class='clear2'>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+<script src="http://apps.bdimg.com/libs/d3/3.4.8/d3.min.js"></script>
+
+
+</body>
+
+</html>
